@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.name }}
+  name: {{ .Values.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+        - name: {{ .Values.name }}
+          image: "{{ .Values.repository }}/{{ .Values.tag | default .Chart.AppVersion }}"
+          securityContext:
+            privileged: {{ .Values.privileged }}
+          args: {{ .Values.args }}
+          resources:
+            limits:
+              memory: {{ .Values.limits.memory }}
+              cpu: {{ .Values.limits.cpu }}
+            requests:
+              memory: {{ .Values.requests.memory }}
+              cpu: {{ .Values.requests.cpu }}
+          ports:
+            - containerPort: {{ .Values.ports.containerPort }}
+
