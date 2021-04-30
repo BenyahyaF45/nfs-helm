@@ -1,31 +1,55 @@
+#Deployement
 name: nfs
 replicas: 1
-repository : cpuguy83          
-tag: nfs-server
+node: node1
+image:
+  repository : itsthenetwork
+  tag: nfs-server-alpine:latest
 privileged: true
-args:
-  - /exports
+volumeMounts:
+  name: nfs-storage
+  mountPath: /nfsshare
+env:
+  - name: SHARED_DIRECTORY
+    value: "/nfsshare"
+containerPort: 2049
+volumes:
+  name: nfs-storage
+  path: /nfs/share
 
-         
-limits:
-  memory: "4Gi"
-  cpu: "1000m"
-requests:
-  memory: "2Gi"
-  cpu: "500m"
-ports:
-  containerPort: 8083
-
+#Service
 name_s: nfs-service
 role: nfs
 
-portss:
-  - port: 2049
-    name: tcp-2049
-    protocol: TCP
+ports:
+  port: 2049
+  protocol: TCP
+  targetPort: 2049
   
-  - name: udp-111
-    port: 111
+#Pv/PVC
+namepvc: nfs-pvc
+namepv: nfs-pv
+accessModes:
+  - ReadWriteOnce
+storageClassName: manual
+storage: 9Gi
+type: local
+storagepv: 10Gi
+
+hostPath:
+  path: "/nfs/data"
+
+
+
+
+
+
+
+
+
+
+
+
 
 ingress:
   enabled: false

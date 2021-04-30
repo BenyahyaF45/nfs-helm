@@ -14,19 +14,25 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
+      nodeSelector: 
+        kubernetes.io/hostname: {{ .Values.node }}
       containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image.repository }}/{{ .Values.image.tag | default .Chart.AppVersion }}
+        volumeMounts:
+        - name: {{ .Values.volumeMounts.name }}
+          mountPath: {{ .Values.volumeMounts.mountPath }}
+        env: {{- range .Values.env }}
+          - name: {{ .name }}
+            value: {{ .value }}
+        {{- end }}
+        ports:
         - name: {{ .Values.name }}
-          image: "{{ .Values.repository }}/{{ .Values.tag | default .Chart.AppVersion }}"
-          securityContext:
-            privileged: {{ .Values.privileged }}
-          args: {{ .Values.args }}
-          resources:
-            limits:
-              memory: {{ .Values.limits.memory }}
-              cpu: {{ .Values.limits.cpu }}
-            requests:
-              memory: {{ .Values.requests.memory }}
-              cpu: {{ .Values.requests.cpu }}
-          ports:
-            - containerPort: {{ .Values.ports.containerPort }}
+          containerPort: {{ .Values.containerPort }}
+        securityContext:
+          privileged: {{ .Values.privileged }}
+      volumes:
+      - name: {{ .Values.volumes.name }}
+        hostPath:               # <- the folder on the host machine.
+          path: {{ .Values.hostPath.path }}
 
