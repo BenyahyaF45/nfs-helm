@@ -1,0 +1,77 @@
+name: nfs
+replicas: 1
+
+repository : cpuguy83          
+tag: nfs-server
+privileged: true
+args:
+  - /exports
+
+         
+limits:
+  memory: "4Gi"
+  cpu: "1000m"
+requests:
+  memory: "2Gi"
+  cpu: "500m"
+ports:
+  containerPort: 8083
+
+name_s: nfs-service
+role: nfs
+
+portss:
+  - port: 2049
+    name: tcp-2049
+    protocol: TCP
+  
+  - name: udp-111
+    port: 111
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#**********************************************
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+      - path: /
+        backend:
+          serviceName: chart-example.local
+          servicePort: 80
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
