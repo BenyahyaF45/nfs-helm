@@ -1,7 +1,7 @@
 #Deployement
 name: nfs
 replicas: 1
-node: node1
+node: devops2-w1
 image:
   repository : itsthenetwork
   tag: nfs-server-alpine:latest
